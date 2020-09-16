@@ -1,3 +1,4 @@
+import LeaveScreenDialog from "@saleor/components/LeaveScreenDialog";
 import { WindowTitle } from "@saleor/components/WindowTitle";
 import { DEFAULT_INITIAL_SEARCH_DATA } from "@saleor/config";
 import useNavigator from "@saleor/hooks/useNavigator";
@@ -7,12 +8,14 @@ import { getProductAvailabilityVariables } from "@saleor/products/utils/handlers
 import useCategorySearch from "@saleor/searches/useCategorySearch";
 import useCollectionSearch from "@saleor/searches/useCollectionSearch";
 import useProductTypeSearch from "@saleor/searches/useProductTypeSearch";
+import createDialogActionHandlers from "@saleor/utils/handlers/dialogActionHandlers";
 import createMetadataCreateHandler from "@saleor/utils/handlers/metadataCreateHandler";
 import {
   useMetadataUpdate,
   usePrivateMetadataUpdate
 } from "@saleor/utils/metadata/updateMetadata";
 import { useWarehouseList } from "@saleor/warehouses/queries";
+import { warehouseListPath } from "@saleor/warehouses/urls";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -24,9 +27,22 @@ import {
   useProductCreateMutation,
   useProductSetAvailabilityForPurchase
 } from "../mutations";
-import { productListUrl, productUrl } from "../urls";
+import {
+  productAddUrl,
+  ProductAddUrlDialog,
+  ProductAddUrlQueryParams,
+  productListUrl,
+  productUrl
+} from "../urls";
 
-export const ProductCreateView: React.FC = () => {
+interface ProductCreateViewProps {
+  params: ProductAddUrlQueryParams;
+}
+
+export const ProductCreateView: React.FC<ProductCreateViewProps> = ({
+  params
+}) => {
+  const { action } = params;
   const navigate = useNavigator();
   const notify = useNotifier();
   const shop = useShop();
@@ -87,6 +103,11 @@ export const ProductCreateView: React.FC = () => {
       }
     }
   });
+
+  const [openModal, closeModal] = createDialogActionHandlers<
+    ProductAddUrlDialog,
+    ProductAddUrlQueryParams
+  >(navigate, productAddUrl, params);
 
   const handleCreate = async (formData: ProductCreatePageSubmitData) => {
     const result = await productCreate({
@@ -190,10 +211,17 @@ export const ProductCreateView: React.FC = () => {
           loading: searchProductTypesOpts.loading,
           onFetchMore: loadMoreProductTypes
         }}
+        onWarehouseConfigure={() => openModal("leave-screen")}
         warehouses={
           warehouses.data?.warehouses.edges.map(edge => edge.node) || []
         }
         weightUnit={shop?.defaultWeightUnit}
+      />
+      <LeaveScreenDialog
+        onSubmit={() => navigate(warehouseListPath)}
+        onClose={closeModal}
+        open={action === "leave-screen"}
+        confirmButtonState="default"
       />
     </>
   );
