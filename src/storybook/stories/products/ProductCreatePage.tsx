@@ -35,7 +35,6 @@ storiesOf("Views / Products / Create product", module)
       saveButtonBarState="default"
       warehouses={warehouseList}
       weightUnit="kg"
-      onWarehouseConfigure={() => undefined}
     />
   ))
   .add("When loading", () => (
@@ -58,7 +57,6 @@ storiesOf("Views / Products / Create product", module)
       saveButtonBarState="default"
       warehouses={undefined}
       weightUnit="kg"
-      onWarehouseConfigure={() => undefined}
     />
   ))
   .add("form errors", () => (
@@ -87,6 +85,5 @@ storiesOf("Views / Products / Create product", module)
       saveButtonBarState="default"
       warehouses={warehouseList}
       weightUnit="kg"
-      onWarehouseConfigure={() => undefined}
     />
   ));

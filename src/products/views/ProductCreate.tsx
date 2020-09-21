@@ -1,4 +1,3 @@
-import LeaveScreenDialog from "@saleor/components/LeaveScreenDialog";
 import { WindowTitle } from "@saleor/components/WindowTitle";
 import { DEFAULT_INITIAL_SEARCH_DATA } from "@saleor/config";
 import useNavigator from "@saleor/hooks/useNavigator";
@@ -8,7 +7,6 @@ import { getProductAvailabilityVariables } from "@saleor/products/utils/handlers
 import useCategorySearch from "@saleor/searches/useCategorySearch";
 import useCollectionSearch from "@saleor/searches/useCollectionSearch";
 import useProductTypeSearch from "@saleor/searches/useProductTypeSearch";
-import createDialogActionHandlers from "@saleor/utils/handlers/dialogActionHandlers";
 import createMetadataCreateHandler from "@saleor/utils/handlers/metadataCreateHandler";
 import {
   useMetadataUpdate,
@@ -21,28 +19,20 @@ import { useIntl } from "react-intl";
 
 import { decimal, weight } from "../../misc";
 import ProductCreatePage, {
-  ProductCreatePageSubmitData
+  ProductCreatePageSubmitData,
+  ProductCreatePageSubmitNextAction
 } from "../components/ProductCreatePage";
 import {
   useProductCreateMutation,
   useProductSetAvailabilityForPurchase
 } from "../mutations";
-import {
-  productAddUrl,
-  ProductAddUrlDialog,
-  ProductAddUrlQueryParams,
-  productListUrl,
-  productUrl
-} from "../urls";
+import { ProductAddUrlQueryParams, productListUrl, productUrl } from "../urls";
 
 interface ProductCreateViewProps {
   params: ProductAddUrlQueryParams;
 }
 
-export const ProductCreateView: React.FC<ProductCreateViewProps> = ({
-  params
-}) => {
-  const { action } = params;
+export const ProductCreateView: React.FC<ProductCreateViewProps> = ({}) => {
   const navigate = useNavigator();
   const notify = useNotifier();
   const shop = useShop();
@@ -85,7 +75,7 @@ export const ProductCreateView: React.FC<ProductCreateViewProps> = ({
   ] = useProductSetAvailabilityForPurchase({
     onCompleted: data => {
       const errors = data?.productSetAvailabilityForPurchase?.errors;
-      if (errors?.length === 0) {
+      if (errors?.length === 0 && !submitNextAction) {
         navigate(productUrl(data.productSetAvailabilityForPurchase.product.id));
       }
     }
@@ -103,11 +93,6 @@ export const ProductCreateView: React.FC<ProductCreateViewProps> = ({
       }
     }
   });
-
-  const [openModal, closeModal] = createDialogActionHandlers<
-    ProductAddUrlDialog,
-    ProductAddUrlQueryParams
-  >(navigate, productAddUrl, params);
 
   const handleCreate = async (formData: ProductCreatePageSubmitData) => {
     const result = await productCreate({
@@ -165,6 +150,18 @@ export const ProductCreateView: React.FC<ProductCreateViewProps> = ({
     updatePrivateMetadata
   );
 
+  const [submitNextAction, setSubmitNextAction] = React.useState<
+    ProductCreatePageSubmitNextAction
+  >(null);
+  const handleSubmitNextAction = (
+    nextAction?: ProductCreatePageSubmitNextAction
+  ) => {
+    const action = nextAction || submitNextAction;
+    if (action === "warehouse-configure") {
+      navigate(warehouseListPath);
+    }
+  };
+
   return (
     <>
       <WindowTitle
@@ -194,7 +191,15 @@ export const ProductCreateView: React.FC<ProductCreateViewProps> = ({
           edge => edge.node
         )}
         onBack={handleBack}
-        onSubmit={handleSubmit}
+        onSubmit={async data => {
+          const errors = await handleSubmit(data);
+          if (errors?.length === 0) {
+            handleSubmitNextAction();
+          } else {
+            setSubmitNextAction(null);
+          }
+        }}
+        onSubmitReject={handleSubmitNextAction}
         saveButtonBarState={productCreateOpts.status}
         fetchMoreCategories={{
           hasMore: searchCategoryOpts.data?.search.pageInfo.hasNextPage,
@@ -211,17 +216,12 @@ export const ProductCreateView: React.FC<ProductCreateViewProps> = ({
           loading: searchProductTypesOpts.loading,
           onFetchMore: loadMoreProductTypes
         }}
-        onWarehouseConfigure={() => openModal("leave-screen")}
+        submitNextAction={submitNextAction}
+        setSubmitNextAction={setSubmitNextAction}
         warehouses={
           warehouses.data?.warehouses.edges.map(edge => edge.node) || []
         }
         weightUnit={shop?.defaultWeightUnit}
-      />
-      <LeaveScreenDialog
-        onSubmit={() => navigate(warehouseListPath)}
-        onClose={closeModal}
-        open={action === "leave-screen"}
-        confirmButtonState="default"
       />
     </>
   );

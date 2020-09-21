@@ -4,6 +4,7 @@ import { ConfirmButtonTransitionState } from "@saleor/components/ConfirmButton";
 import Container from "@saleor/components/Container";
 import Form from "@saleor/components/Form";
 import Grid from "@saleor/components/Grid";
+import LeaveScreenDialog from "@saleor/components/LeaveScreenDialog";
 import { MetadataFormData } from "@saleor/components/Metadata";
 import Metadata from "@saleor/components/Metadata/Metadata";
 import PageHeader from "@saleor/components/PageHeader";
@@ -52,6 +53,8 @@ export interface ProductVariantPageSubmitData
   removeStocks: string[];
 }
 
+export type ProductVariantPageSubmitNextAction = "warehouse-configure";
+
 interface ProductVariantPageProps {
   defaultWeightUnit: string;
   variant?: ProductVariant;
@@ -61,14 +64,16 @@ interface ProductVariantPageProps {
   placeholderImage?: string;
   header: string;
   warehouses: WarehouseFragment[];
+  submitNextAction?: ProductVariantPageSubmitNextAction;
   onVariantReorder: ReorderAction;
   onAdd();
   onBack();
   onDelete();
   onSubmit(data: ProductVariantPageSubmitData);
+  onSubmitReject?(nextAction?: ProductVariantPageSubmitNextAction);
+  setSubmitNextAction?(nextAction: ProductVariantPageSubmitNextAction);
   onImageSelect(id: string);
   onVariantClick(variantId: string);
-  onWarehouseConfigure();
 }
 
 const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
@@ -85,9 +90,11 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
   onDelete,
   onImageSelect,
   onSubmit,
+  onSubmitReject,
   onVariantClick,
   onVariantReorder,
-  onWarehouseConfigure
+  submitNextAction,
+  setSubmitNextAction
 }) => {
   const attributeInput = React.useMemo(
     () => getAttributeInputFromVariant(variant),
@@ -261,7 +268,12 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                         triggerChange();
                         removeStock(id);
                       }}
-                      onWarehouseConfigure={onWarehouseConfigure}
+                      onWarehouseConfigure={() => {
+                        setSubmitNextAction("warehouse-configure");
+                        if (!onSubmit || !hasChanged) {
+                          onSubmitReject("warehouse-configure");
+                        }
+                      }}
                     />
                     <CardSpacer />
                     <Metadata data={data} onChange={changeMetadata} />
@@ -273,6 +285,17 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                   onCancel={onBack}
                   onDelete={onDelete}
                   onSave={submit}
+                />
+                <LeaveScreenDialog
+                  onSaveChanges={() => {
+                    submit();
+                  }}
+                  onRejectChanges={() => {
+                    onSubmitReject("warehouse-configure");
+                  }}
+                  onClose={() => setSubmitNextAction(null)}
+                  open={submitNextAction === "warehouse-configure"}
+                  confirmButtonState={saveButtonBarState}
                 />
               </>
             );

@@ -27,7 +27,6 @@ storiesOf("Views / Products / Product variant details", module)
       onVariantReorder={() => undefined}
       saveButtonBarState="default"
       warehouses={warehouseList}
-      onWarehouseConfigure={() => undefined}
     />
   ))
   .add("when loading data", () => (
@@ -46,7 +45,6 @@ storiesOf("Views / Products / Product variant details", module)
       onVariantReorder={() => undefined}
       saveButtonBarState="default"
       warehouses={warehouseList}
-      onWarehouseConfigure={() => undefined}
     />
   ))
   .add("attribute errors", () => (
@@ -81,6 +79,5 @@ storiesOf("Views / Products / Product variant details", module)
         ...error
       }))}
       warehouses={warehouseList}
-      onWarehouseConfigure={() => undefined}
     />
   ));
