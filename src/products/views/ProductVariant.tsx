@@ -195,14 +195,10 @@ export const ProductVariant: React.FC<ProductUpdateProps> = ({
     variables => updatePrivateMetadata({ variables })
   );
 
-  const [submitNextAction, setSubmitNextAction] = React.useState<
-    ProductVariantPageSubmitNextAction
-  >(null);
   const handleSubmitNextAction = (
     nextAction?: ProductVariantPageSubmitNextAction
   ) => {
-    const action = nextAction || submitNextAction;
-    if (action === "warehouse-configure") {
+    if (nextAction === "warehouse-configure") {
       navigate(warehouseListPath);
     }
   };
@@ -229,8 +225,6 @@ export const ProductVariant: React.FC<ProductUpdateProps> = ({
           const errors = await handleSubmit(data);
           if (errors?.length === 0) {
             handleSubmitNextAction(nextAction);
-          } else {
-            setSubmitNextAction(null);
           }
         }}
         onSubmitSkip={handleSubmitNextAction}

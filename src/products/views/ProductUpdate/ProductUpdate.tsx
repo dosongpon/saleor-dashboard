@@ -276,14 +276,10 @@ export const ProductUpdate: React.FC<ProductUpdateProps> = ({ id, params }) => {
     ...maybe(() => updateSimpleProductOpts.data.productUpdate.errors, [])
   ];
 
-  const [submitNextAction, setSubmitNextAction] = React.useState<
-    ProductUpdatePageSubmitNextAction
-  >(null);
   const handleSubmitNextAction = (
     nextAction?: ProductUpdatePageSubmitNextAction
   ) => {
-    const action = nextAction || submitNextAction;
-    if (action === "warehouse-configure") {
+    if (nextAction === "warehouse-configure") {
       navigate(warehouseListPath);
     }
   };
@@ -315,8 +311,6 @@ export const ProductUpdate: React.FC<ProductUpdateProps> = ({ id, params }) => {
           const errors = await handleSubmit(data);
           if (errors?.length === 0) {
             handleSubmitNextAction(nextAction);
-          } else {
-            setSubmitNextAction(null);
           }
         }}
         onSubmitSkip={handleSubmitNextAction}
