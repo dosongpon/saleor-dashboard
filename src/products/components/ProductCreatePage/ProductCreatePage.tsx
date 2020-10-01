@@ -53,6 +53,7 @@ interface FormData {
   chargeTaxes: boolean;
   description: RawDraftContentState;
   isPublished: boolean;
+  labor: number;
   name: string;
   productType: string;
   seoDescription: string;
@@ -140,6 +141,7 @@ export const ProductCreatePage: React.FC<ProductCreatePageProps> = ({
     collections: [],
     description: {} as any,
     isPublished: false,
+    labor: 0,
     name: "",
     productType: "",
     publicationDate: "",

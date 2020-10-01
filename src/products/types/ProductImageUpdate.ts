@@ -84,6 +84,12 @@ export interface ProductImageUpdate_productImageUpdate_product_basePrice {
   currency: string;
 }
 
+export interface ProductImageUpdate_productImageUpdate_product_labor {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
 export interface ProductImageUpdate_productImageUpdate_product_margin {
   __typename: "Margin";
   start: number | null;
@@ -205,6 +211,7 @@ export interface ProductImageUpdate_productImageUpdate_product {
   category: ProductImageUpdate_productImageUpdate_product_category | null;
   collections: (ProductImageUpdate_productImageUpdate_product_collections | null)[] | null;
   basePrice: ProductImageUpdate_productImageUpdate_product_basePrice | null;
+  labor: ProductImageUpdate_productImageUpdate_product_labor | null;
   margin: ProductImageUpdate_productImageUpdate_product_margin | null;
   purchaseCost: ProductImageUpdate_productImageUpdate_product_purchaseCost | null;
   isAvailable: boolean | null;

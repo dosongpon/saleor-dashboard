@@ -80,6 +80,7 @@ export const ProductCreateView: React.FC = () => {
               collections: formData.collections,
               descriptionJson: JSON.stringify(formData.description),
               isPublished: formData.isPublished,
+              labor: decimal(formData.labor),
               name: formData.name,
               productType: formData.productType,
               publicationDate:

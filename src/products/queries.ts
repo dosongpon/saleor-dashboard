@@ -74,6 +74,9 @@ export const productFragment = gql`
     basePrice {
       ...Money
     }
+    labor {
+      ...Money
+    }
     productType {
       id
       name
@@ -138,6 +141,9 @@ export const productFragmentDetails = gql`
       name
     }
     basePrice {
+      ...Money
+    }
+    labor {
       ...Money
     }
     margin {
@@ -500,6 +506,9 @@ const createMultipleVariantsData = gql`
     product(id: $id) {
       ...ProductVariantAttributesFragment
       basePrice {
+        ...Money
+      }
+      labor {
         ...Money
       }
     }

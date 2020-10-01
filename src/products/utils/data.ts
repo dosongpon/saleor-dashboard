@@ -170,6 +170,7 @@ export function getChoices(nodes: Node[]): SingleAutocompleteChoiceType[] {
 
 export interface ProductUpdatePageFormData {
   basePrice: number;
+  labor: number;
   category: string | null;
   collections: string[];
   chargeTaxes: boolean;
@@ -198,6 +199,7 @@ export function getProductUpdatePageFormData(
     ),
     description: maybe(() => JSON.parse(product.descriptionJson)),
     isPublished: maybe(() => product.isPublished, false),
+    labor: maybe(() => product.labor.amount, 0),
     name: maybe(() => product.name, ""),
     publicationDate: maybe(() => product.publicationDate, ""),
     seoDescription: maybe(() => product.seoDescription, ""),

@@ -27,6 +27,7 @@ export function createUpdateHandler(
       descriptionJson: JSON.stringify(data.description),
       id: product.id,
       isPublished: data.isPublished,
+      labor: decimal(data.labor),
       name: data.name,
       publicationDate:
         data.publicationDate !== "" ? data.publicationDate : null,

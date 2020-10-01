@@ -78,6 +78,12 @@ export interface Product_basePrice {
   currency: string;
 }
 
+export interface Product_labor{
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
 export interface Product_margin {
   __typename: "Margin";
   start: number | null;
@@ -199,6 +205,7 @@ export interface Product {
   category: Product_category | null;
   collections: (Product_collections | null)[] | null;
   basePrice: Product_basePrice | null;
+  labor: Product_labor | null;
   margin: Product_margin | null;
   purchaseCost: Product_purchaseCost | null;
   isAvailable: boolean | null;

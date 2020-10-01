@@ -84,6 +84,13 @@ export interface ProductImageCreate_productImageCreate_product_basePrice {
   currency: string;
 }
 
+export interface ProductImageCreate_productImageCreate_product_labor {
+  __typename: "Money";
+  amount: number;
+  currency: string;
+}
+
+
 export interface ProductImageCreate_productImageCreate_product_margin {
   __typename: "Margin";
   start: number | null;
@@ -205,6 +212,7 @@ export interface ProductImageCreate_productImageCreate_product {
   category: ProductImageCreate_productImageCreate_product_category | null;
   collections: (ProductImageCreate_productImageCreate_product_collections | null)[] | null;
   basePrice: ProductImageCreate_productImageCreate_product_basePrice | null;
+  labor: ProductImageCreate_productImageCreate_product_labor | null;
   margin: ProductImageCreate_productImageCreate_product_margin | null;
   purchaseCost: ProductImageCreate_productImageCreate_product_purchaseCost | null;
   isAvailable: boolean | null;

@@ -26,6 +26,7 @@ interface ProductPricingProps {
   data: {
     chargeTaxes: boolean;
     basePrice: number;
+    labor: number;
   };
   disabled: boolean;
   errors: ProductErrorFragment[];
@@ -38,7 +39,7 @@ const ProductPricing: React.FC<ProductPricingProps> = props => {
   const classes = useStyles(props);
   const intl = useIntl();
 
-  const formErrors = getFormErrors(["basePrice"], errors);
+  const formErrors = getFormErrors(["basePrice", "labor"], errors);
 
   return (
     <Card>
@@ -70,6 +71,24 @@ const ProductPricing: React.FC<ProductPricingProps> = props => {
             hint={getProductErrorMessage(formErrors.basePrice, intl)}
             name="basePrice"
             value={data.basePrice}
+            currencySymbol={currency}
+            onChange={onChange}
+            InputProps={{
+              inputProps: {
+                min: 0
+              }
+            }}
+          />
+          <PriceField
+            disabled={disabled}
+            label={intl.formatMessage({
+              defaultMessage: "Labor",
+              description: "Labor price"
+            })}
+            error={!!formErrors.labor}
+            hint={getProductErrorMessage(formErrors.labor, intl)}
+            name="labor"
+            value={data.labor}
             currencySymbol={currency}
             onChange={onChange}
             InputProps={{
